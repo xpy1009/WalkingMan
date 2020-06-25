@@ -17,8 +17,10 @@ public class Player : MonoBehaviour
     void Start()
     {
         animator = avatar.GetComponent<Animator>();
-        rb = avatar.GetComponent<Rigidbody2D>();
-        col = avatar.GetComponent<Collider2D>();
+        //rb = avatar.GetComponent<Rigidbody2D>();
+        //col = avatar.GetComponent<Collider2D>();
+        rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
@@ -56,6 +58,7 @@ public class Player : MonoBehaviour
         }
 
         rb.velocity = new Vector2(h * speed * Time.fixedDeltaTime, rb.velocity.y);
+        //rb.AddForce(new Vector2(h * speed * Time.fixedDeltaTime, rb.velocity.y));
     }
 
 }
