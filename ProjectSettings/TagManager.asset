@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Money
+  - Spike
+  - NextLevelFlag
+  - MagicArea
   layers:
   - Default
   - TransparentFX
@@ -13,9 +17,15 @@ TagManager:
   - UI
   - 
   - 
+<<<<<<< HEAD
   - Ground
   - Player
   - 
+=======
+  - Grass
+  - Money
+  - Player
+>>>>>>> 97d0686d450b6aa76cbb5e8788104645959c427a
   - 
   - 
   - 
@@ -38,6 +48,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Player
+    uniqueID: 3758009063
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
