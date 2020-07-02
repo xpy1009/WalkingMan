@@ -8,6 +8,7 @@ TagManager:
   - Spike
   - NextLevelFlag
   - MagicArea
+  - rope
   layers:
   - Default
   - TransparentFX
@@ -17,16 +18,10 @@ TagManager:
   - UI
   - 
   - 
-<<<<<<< HEAD
-  - Ground
-  - Player
-  - 
-=======
   - Grass
   - Money
   - Player
->>>>>>> 97d0686d450b6aa76cbb5e8788104645959c427a
-  - 
+  - cameraconfiner
   - 
   - 
   - 
@@ -53,10 +48,4 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
-    locked: 0
-  - name: Player
-    uniqueID: 1005410263
-    locked: 0
-  - name: Ground
-    uniqueID: 955332227
     locked: 0
