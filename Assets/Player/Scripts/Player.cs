@@ -27,6 +27,12 @@ public class Player : MonoBehaviour {
     private float timeSpentInvincible = 0.0f;
 
     private bool isMagicArea = false;
+    bool isrope=false;
+    bool isholding=false;
+    float h ;
+    float v ;
+    HingeJoint2D hj;
+    Rigidbody2D node;
 
     // Start is called before the first frame update
     void Start () {
@@ -34,13 +40,17 @@ public class Player : MonoBehaviour {
         rb = this.GetComponent<Rigidbody2D> ();
         col = this.GetComponent<Collider2D> ();
         trans = this.transform;
-
-        boxSize = new Vector2 (0.2f, boxHeight);
+        hj=GetComponent<HingeJoint2D>();
+        hj.enabled=false;
+        boxSize = new Vector2 (0.2f, boxHeight);   
     }
 
     // Update is called once per frame
     void Update () {
-        Movement ();
+        h= Input.GetAxis ("Horizontal");
+        v= Input.GetAxis ("Vertical");
+        if(!hj.enabled)
+            Movement ();
 
         if (isInvincible) {
             timeSpentInvincible += Time.deltaTime;
@@ -59,9 +69,7 @@ public class Player : MonoBehaviour {
     }
 
     void Movement () {
-        float h = Input.GetAxis ("Horizontal");
-        float v = Input.GetAxis ("Vertical");
-
+        
         float speed = 0.0f;
 
         if (Input.GetKey (KeyCode.LeftShift)) {
@@ -90,6 +98,16 @@ public class Player : MonoBehaviour {
         if (vRaw > 0.0f && isGround && !isMagicArea) {
             jumpRequest = true;
         }
+        if ( Input.GetKey(KeyCode.Z))
+        {
+            
+            isholding=true;
+        }
+        else {
+            isholding=false;
+            hj.enabled=false;
+            }
+        
     }
     private void FixedUpdate () {
         if (jumpRequest) {
@@ -98,45 +116,81 @@ public class Player : MonoBehaviour {
             isGround = false;
         } else {
             Vector2 boxCenter = (Vector2) trans.position;
+        
+        if(isrope && isholding){
+            hj.enabled=true;
+            hj.connectedBody=node;
+            rb.gravityScale=0;
+            Vector2 position = rb.position;
+            position.y = position.y + 5 * v * Time.deltaTime;
+            rb.velocity=node.velocity;
 
-            if (Physics2D.OverlapBox (boxCenter, boxSize, 0, mask) != null) {
-                isGround = true;
-            } else {
-                isGround = false;
-            }
+            rb.MovePosition(position);
+        }
+        else {
+            // hj.enabled=false;
+            rb.gravityScale=1;
+        }
+
+            // if (Physics2D.OverlapBox (boxCenter, boxSize, 0, mask) != null) {
+            //     isGround = true;
+            // } else {
+            //     isGround = false;
+            // }
         }
     }
 
     private void OnTriggerEnter2D (Collider2D other) {
         if (other.gameObject.tag == "Money") {
-            Debug.Log ("Money");
+            // Debug.Log ("Money");
             Destroy (other.gameObject);
             int money = PlayerPrefs.GetInt ("Money", 0);
             PlayerPrefs.SetInt ("Money", money + 1);
-            Debug.Log (PlayerPrefs.GetInt ("Money", 0));
+            // Debug.Log (PlayerPrefs.GetInt ("Money", 0));
         } else if (other.gameObject.tag == "Spike") {
-            Debug.Log ("Spike");
+            // Debug.Log ("Spike");
             isInvincible = true;
             timeSpentInvincible = 0.0f;
         } else if (other.gameObject.tag == "NextLevelFlag") {
-            Debug.Log ("NextLevelFlag");
+            // Debug.Log ("NextLevelFlag");
             Scene scene = SceneManager.GetActiveScene ();
-            const int totalNumberOfLevels = 2;
+            const int totalNumberOfLevels = 3;
             int levelID = int.Parse (scene.name.Substring (5));
             int nextLevelId = (levelID % totalNumberOfLevels + 1);
             string nextSceneName = "Level" + nextLevelId.ToString ();
             SceneManager.LoadScene (nextSceneName);
         } else if (other.gameObject.tag == "MagicArea") {
-            Debug.Log ("MagicArea");
+            // Debug.Log ("MagicArea");
             isMagicArea = true;
+        } else if (other.gameObject.tag == "rope") {
+            // Debug.Log ("MagicArea");
+            isrope = true;
+            node=other.transform.parent.GetComponent<Rigidbody2D>();
         }
+        
     }
 
     private void OnTriggerExit2D (Collider2D other) {
         if (other.gameObject.tag == "MagicArea") {
-            Debug.Log ("MagicArea");
+            // Debug.Log ("MagicArea");
             isMagicArea = false;
-        }
+        } else if (other.gameObject.tag == "rope") {
+            // Debug.Log ("MagicArea");
+            isrope = false;
+            
+        } 
+
+    }
+
+    void OnCollisionEnter2D(Collision2D other){
+        isGround=true;
+        
+        
+    }
+    void OnCollisionExit2D(Collision2D other){
+        isGround=false;
+        
+        
     }
     private void OnDrawGizmos () {
         if (isGround) {
